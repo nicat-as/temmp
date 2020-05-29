@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <div class="container">
+      <input id="search" type="search" />
+      <input type="button" value="Search" id="button" />
+      <div id="temp"></div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      function getData(query) {
+        let div = $("#temp");
+        div.empty();
+        
+        let str = "";
+        $.ajax({
+          url: "http://192.168.0.105:8080/api/v1.0/parser/q",
+          data: {
+            url: query,
+          },
+          type: "GET",
+          success: function (data) {
+            console.log(data.website);
+            str += `
+                    
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="${data.thumbnail}" alt="Card image cap">
+                        <div class="card-body">
+                        <h5 class="card-title">${data.title}</h5>
+                        <p class="card-text">${data.description}</p>
+                    </div>
+                <div class="card-body">
+                <a href="http://${data.website}" class="card-link">Website</a>
+                    <img src="${Object.keys(data.iconUrl)[0]}" width=32px height=32px> 
+                    </div>
+                        </div>
+                    
+                    `;
+
+            div.append(str);
+          },
+        });
+      }
+
+      function getUrls(json) {
+        let str = "";
+        jQuery.each(json, function (i, item) {
+          str += `
+                    <i data-src="${i}"></i>
+                `;
+        });
+        return str;
+      }
+
+      $("#button").on("click", function () {
+        getData($("#search").val());
+      });
+    </script>
+  </body>
+</html>
