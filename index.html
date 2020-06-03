@@ -22,8 +22,16 @@
     <div class="container">
       <input id="search" type="search" />
       <input type="button" value="Search" id="button" />
+      <button id="togglePipButton">Toggle Picture-in-Picture Mode!</button> 
+      <br>
+      <br>
       <div id="temp"></div>
+      
+
+<!-- button will be used to toggle the PiP mode -->
+
     </div>
+
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -53,17 +61,29 @@
           type: "GET",
           success: function (data) {
             console.log(data.website);
+            let vid = '';
+            if(data.embeddedVideoUrl===null){
+              vid = `<img class="card-img-top" src="${data.thumbnail}" alt="Card image cap">`;
+            }else{
+              // vid=`<video id="videoElement" controls="true" src="${data.embeddedVideoUrl}"></video>`;
+              vid=`<iframe src="${data.embeddedVideoUrl}"
+              frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            }
+
             str += `
                     
                     <div class="card" style="width: 18rem;">
-                        <img class="card-img-top" src="${data.thumbnail}" alt="Card image cap">
+                        
+                        ${vid}
+
                         <div class="card-body">
                         <h5 class="card-title">${data.title}</h5>
                         <p class="card-text">${data.description}</p>
                     </div>
                 <div class="card-body">
+                  <img src="${Object.keys(data.iconUrl)[0]}" width=32px height=32px> 
                 <a href="http://${data.website}" class="card-link">Website</a>
-                    <img src="${Object.keys(data.iconUrl)[0]}" width=32px height=32px> 
+                    
                     </div>
                         </div>
                     
@@ -88,5 +108,10 @@
         getData($("#search").val());
       });
     </script>
+
+    <script src="pip.js"></script>
+
+
+
   </body>
 </html>
